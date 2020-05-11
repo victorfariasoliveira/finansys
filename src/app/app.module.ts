@@ -7,7 +7,7 @@ import { CategoriesModule } from './pages/categories/categories.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, CategoriesModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, CategoriesModule],
   providers: [],
   bootstrap: [AppComponent],
 })
