@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http"
+import { HttpClient } from "@angular/common/http"
 
 import { Observable, throwError } from 'rxjs'
-import { map, catchError, flatMap } from 'rxjs/operators'
+import { map, catchError } from 'rxjs/operators'
 
 import { Category } from './category.model'
 
@@ -53,6 +53,8 @@ export class CategoryService {
       map(() => null)
     )
   }
+
+  // PRIVATE METHODS
 
   private jsonDataToCategory(jsonData: any): Category {
     return jsonData as Category
