@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http"
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { Observable, throwError } from 'rxjs'
-import { map, catchError } from 'rxjs/operators'
+import { Observable, throwError } from "rxjs";
+import { map, catchError, flatMap } from "rxjs/operators";
 
-import { Category } from './category.model'
+import { Category } from "./category.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
 
-  private apiPath: string = "api/categories" // definido do in-memory-web-api
+  private apiPath: string = "api/categories";
 
-  constructor(private http: HttpClient ) {}
+  constructor(private http: HttpClient) { }
 
 
   getAll(): Observable<Category[]> {
@@ -24,7 +24,8 @@ export class CategoryService {
   }
 
   getById(id: number): Observable<Category> {
-    const url = `${this.apiPath}/${id}`
+    const url = `${this.apiPath}/${id}`;
+
     return this.http.get(url).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategory)
@@ -39,37 +40,39 @@ export class CategoryService {
   }
 
   update(category: Category): Observable<Category> {
-    const url = `${this.apiPath}/${category.id}`
+    const url = `${this.apiPath}/${category.id}`;
+
     return this.http.put(url, category).pipe(
       catchError(this.handleError),
-      map(() => category) // apenas para uso do in_memory_api pois ao atualizar, ele não retorna nada
+      map(() => category)
     )
   }
 
   delete(id: number): Observable<any> {
-    const url = `${this.apiPath}/${id}`
+    const url = `${this.apiPath}/${id}`;
+
     return this.http.delete(url).pipe(
       catchError(this.handleError),
       map(() => null)
     )
   }
 
+
+
   // PRIVATE METHODS
 
-  private jsonDataToCategory(jsonData: any): Category {
-    return jsonData as Category
-  }
-
   private jsonDataToCategories(jsonData: any[]): Category[] {
-    const categories: Category[] = []
-    jsonData.forEach(element => categories.push(element as Category))
-    return categories
+    const categories: Category[] = [];
+    jsonData.forEach(element => categories.push(element as Category));
+    return categories;
   }
 
-  private handleError(error: any): Observable<any> {
-    console.log("ERRO NA REQ => ", error)
-    return throwError(error)
+  private jsonDataToCategory(jsonData: any): Category {
+    return jsonData as Category;
+  }
+
+  private handleError(error: any): Observable<any>{
+    console.log("ERRO NA REQUISIÇÃO => ", error);
+    return throwError(error);
   }
 }
-
-
