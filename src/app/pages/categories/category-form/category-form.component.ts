@@ -13,7 +13,7 @@ import { CategoryService } from "../shared/category.service";
 
 import { switchMap } from "rxjs/operators";
 
-import toastr from "toastr";
+import { success as toastrSuccess, error as toastrError } from "toastr";
 
 @Component({
   selector: "app-category-form",
@@ -43,6 +43,15 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
 
   ngAfterContentChecked() {
     this.setPageTitle();
+  }
+
+  submitForm() {
+    this.submittingForm = true;
+    if (this.currentAction == "new") {
+      this.createCategory();
+    } else {
+      this.updateCategory();
+    } //currenctAction == "edit"
   }
 
   // PRIVATE METHODS
@@ -87,5 +96,51 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
       const categoryName = this.category.name || "";
       this.pageTitle = "Editando categoria: " + categoryName;
     }
+  }
+
+  private createCategory() {
+    const category: Category = Object.assign(
+      new Category(),
+      this.categoryForm.value
+    );
+
+    this.categoryService.create(category).subscribe(
+      (category) => this.actionsForSuccess(category),
+      (error) => this.actionsForError(error)
+    );
+  }
+
+  private updateCategory() {
+    const category: Category = Object.assign(
+      new Category(),
+      this.categoryForm.value
+    );
+
+    this.categoryService.update(category).subscribe(
+      (category) => this.actionsForSuccess(category),
+      (error) => this.actionsForError(error)
+    );
+  }
+
+  private actionsForSuccess(category: Category) {
+    toastrSuccess(
+      "Solicitação processada com sucesso, agora você pode editar a sua categoria."
+    );
+
+    // Redireciona a pagina para edição de categoria
+    this.router.navigateByUrl("categories", { skipLocationChange: true });
+  }
+
+  private actionsForError(error) {
+    toastrError("Ocorreu um erro ao processar a sua solicitação.");
+    this.submittingForm = false;
+
+    /*
+    if(error.status === 422) {
+      this.serverErrorMessagens = JSON.parse(error._body).errors
+    } else {
+      this.serverErrorMessagens = ["Falha na comunicação com o servidor. Por favor, tente mais tarde."]
+    }
+    */
   }
 }
