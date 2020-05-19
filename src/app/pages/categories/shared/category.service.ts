@@ -14,12 +14,18 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {}
 
+  /*
+   * Obtem todas as categorias
+   */
   getAll(): Observable<Category[]> {
     return this.http
       .get(this.apiPath)
       .pipe(catchError(this.handleError), map(this.jsonDataToCategories));
   }
 
+  /*
+   * Obtem uma categoria pelo seu ID
+   */
   getById(id: number): Observable<Category> {
     const url = `${this.apiPath}/${id}`;
 
@@ -28,12 +34,18 @@ export class CategoryService {
       .pipe(catchError(this.handleError), map(this.jsonDataToCategory));
   }
 
+  /*
+   * Cria uma categoria
+   */
   create(category: Category): Observable<Category> {
     return this.http
       .post(this.apiPath, category)
       .pipe(catchError(this.handleError), map(this.jsonDataToCategory));
   }
 
+  /*
+   * Atualiza uma categoria pelo seu ID
+   */
   update(category: Category): Observable<Category> {
     const url = `${this.apiPath}/${category.id}`;
 
@@ -43,6 +55,9 @@ export class CategoryService {
     );
   }
 
+  /*
+   * Deleta uma categoria pelo seu ID
+   */
   delete(id: number): Observable<any> {
     const url = `${this.apiPath}/${id}`;
 
@@ -54,16 +69,25 @@ export class CategoryService {
 
   // PRIVATE METHODS
 
+  /*
+   * Converte os dados do backend em um array de objetos Categorie
+   */
   private jsonDataToCategories(jsonData: any[]): Category[] {
     const categories: Category[] = [];
     jsonData.forEach((element) => categories.push(element as Category));
     return categories;
   }
 
+  /*
+   * Converte os dados do backend em objeto Categorie
+   */
   private jsonDataToCategory(jsonData: any): Category {
     return jsonData as Category;
   }
 
+  /*
+   * Captura os erros
+   */
   private handleError(error: any): Observable<any> {
     console.log("ERRO NA REQUISIÇÃO => ", error);
     return throwError(error);

@@ -1,10 +1,5 @@
 import { Component, OnInit, AfterContentChecked } from "@angular/core";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { ActivatedRoute, Router } from "@angular/router";
 
@@ -20,6 +15,16 @@ import { success as toastrSuccess, error as toastrError } from "toastr";
   templateUrl: "./category-form.component.html",
   styleUrls: ["./category-form.component.css"],
 })
+
+/*
+ * DECLARAÇÕES
+ * currentAction = Ação atual: new para criar uma nova categoria ou "edit" para editar uma.
+ * categoryForm = O formulário em si.
+ * pageTitle = método que seta no titulo da página se está criando ou editando uma categoria.
+ * serverErrorMessages = Lista de erros que podem vir do servidor e que serão parcialmente informados ao usuário.
+ * submittingForm = varivel para permitir ou não o envio do formulário ( evita diversas submissões ao mesmo tempo ).
+ * category: objeto categorie em si.
+ */
 export class CategoryFormComponent implements OnInit, AfterContentChecked {
   currentAction: string;
   categoryForm: FormGroup;
@@ -35,12 +40,20 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     private formBuilder: FormBuilder
   ) {}
 
+  /*
+   * Inicia o ciclo de vida do componente setando a ação atual, criando o formulário e carregando a categoria
+   * caso esteja sendo editada.
+   */
   ngOnInit() {
     this.setCurrentAction();
     this.buildCategoryForm();
     this.loadCategory();
   }
 
+  /*
+   * depois de todo o conteúdo do ngOnInit ser gerado, o ngAfterContentChecked é gerado. Nesse caso, setando
+   * o titulo da página.
+   */
   ngAfterContentChecked() {
     this.setPageTitle();
   }
@@ -51,7 +64,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
       this.createCategory();
     } else {
       this.updateCategory();
-    } //currenctAction == "edit"
+    }
   }
 
   // PRIVATE METHODS
@@ -63,6 +76,9 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     }
   }
 
+  /*
+   * Monta o fomulário
+   */
   private buildCategoryForm() {
     this.categoryForm = this.formBuilder.group({
       id: [null],
@@ -71,6 +87,9 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     });
   }
 
+  /*
+   * Monta o fomulário para a edição
+   */
   private loadCategory() {
     if (this.currentAction === "edit") {
       this.route.paramMap
@@ -80,15 +99,18 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
         .subscribe(
           (category) => {
             this.category = category;
-            this.categoryForm.patchValue(this.category); //binds loaded category data to api to category form
+            this.categoryForm.patchValue(this.category); // vincula os dados carregados da api no fomulário em edição
           },
           (error) => {
-            alert("Ocorreu um erro no servidor, tente novamente mais tarde");
+            toastrError("Ocorreu um erro ao processar a sua solicitação.");
           }
         );
     }
   }
 
+  /*
+   * Seta o título da página
+   */
   private setPageTitle() {
     if (this.currentAction == "new")
       this.pageTitle = "Cadastro de nova categoria";
@@ -98,6 +120,9 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     }
   }
 
+  /*
+   * Criação da categoria
+   */
   private createCategory() {
     const category: Category = Object.assign(
       new Category(),
@@ -110,6 +135,9 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     );
   }
 
+  /*
+   * Update da categoria
+   */
   private updateCategory() {
     const category: Category = Object.assign(
       new Category(),
