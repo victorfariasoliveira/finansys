@@ -74,7 +74,10 @@ export class CategoryService {
    */
   private jsonDataToCategories(jsonData: any[]): Category[] {
     const categories: Category[] = [];
-    jsonData.forEach((element) => categories.push(element as Category));
+    jsonData.forEach((element) => {
+      const category = Object.assign(new Category(), element);
+      categories.push(category);
+    });
     return categories;
   }
 
@@ -82,7 +85,7 @@ export class CategoryService {
    * Converte os dados do backend em objeto Categorie
    */
   private jsonDataToCategory(jsonData: any): Category {
-    return jsonData as Category;
+    return Object.assign(new Category(), jsonData);
   }
 
   /*
