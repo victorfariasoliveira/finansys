@@ -27,8 +27,35 @@
 
     <div class="card-body">
       <div class="form-row">
-        <div class="form-group col-md-4">
-          <label for="name">Name</label>
+        <!-- type -->
+        <div class="form-group col-md-2">
+          <label for="type">Tipo</label>
+
+          <select
+            name="type"
+            id="type"
+            formControlName="type"
+            class="form-control"
+          >
+            <option value="expense">Despesa</option>
+            <option value="revenue">Receita</option>
+          </select>
+
+          <div
+            class="text-danger"
+            *ngIf="
+              entryForm.get('type').invalid && entryForm.get('type').touched
+            "
+          >
+            <div *ngIf="entryForm.get('name').errors.required">
+              Dado obrigatorio
+            </div>
+          </div>
+        </div>
+
+        <!-- name -->
+        <div class="form-group col-md-5">
+          <label for="name">Lançamento</label>
           <input
             type="text"
             class="form-control"
@@ -51,7 +78,32 @@
           </div>
         </div>
 
+        <!-- amount -->
+        <div class="form-group col-md-3">
+          <label for="amount">Valor</label>
+          <input
+            [imask]="imaskConfig"
+            type="text"
+            class="form-control text-right"
+            id="amount"
+            formControlName="amount"
+          />
+
+          <div
+            class="text-danger"
+            *ngIf="
+              entryForm.get('amount').invalid && entryForm.get('amount').touched
+            "
+          >
+            <div *ngIf="entryForm.get('amount').errors.required">
+              Dado obrigatorio
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
         <div class="form-group col-md-8">
+          <!-- description -->
           <label for="description">Description</label>
           <input
             type="text"
